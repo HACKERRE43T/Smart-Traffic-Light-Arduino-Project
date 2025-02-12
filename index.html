@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Traffic Control System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #0d1b2a;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(90deg, #1b263b, #415a77);
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .status, .sensor-data, .log {
+            font-size: 18px;
+            margin: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #1b263b;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            flex: 1;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        .controls button {
+            padding: 12px 25px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .red { background-color: red; color: white; }
+        .yellow { background-color: yellow; color: black; }
+        .green { background-color: green; color: white; }
+        .controls button:hover {
+            opacity: 0.8;
+        }
+        .connect-btn {
+            padding: 12px 20px;
+            font-size: 18px;
+            background: #00a8e8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .connect-btn:hover {
+            background: #0077b6;
+        }
+    </style>
+</head>
+<body>
+    <header>AI Traffic Control System</header>
+    <div class="container">
+        <div class="status" id="status">Status: Waiting for data...</div>
+        <div class="sensor-data" id="sensor-data">Sensor Readings: Loading...</div>
+        <div class="log" id="log">Event Log:<br></div>
+    </div>
+    <div class="controls">
+        <button class="red" onclick="sendCommand('RED')">Red Signal</button>
+        <button class="yellow" onclick="sendCommand('YELLOW')">Yellow Signal</button>
+        <button class="green" onclick="sendCommand('GREEN')">Green Signal</button>
+    </div>
+    <button class="connect-btn" onclick="connectBluetooth()">Connect Bluetooth</button>
+    <script>
+        let btDevice;
+
+        async function connectBluetooth() {
+            try {
+                btDevice = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['generic_access'] });
+                const server = await btDevice.gatt.connect();
+                console.log("Connected to Bluetooth Device");
+                document.getElementById("log").innerHTML += "<br>✅ Bluetooth Connected";
+            } catch (error) {
+                console.error("Bluetooth Connection Failed", error);
+                document.getElementById("log").innerHTML += "<br>❌ Bluetooth Connection Failed";
+            }
+        }
+
+        function sendCommand(command) {
+            document.getElementById("status").innerText = "Status: " + command + " Activated";
+            document.getElementById("log").innerHTML += "<br>🚦 Signal Changed to " + command;
+            console.log("Command Sent: ", command);
+        }
+    </script>
+</body>
+</html>
